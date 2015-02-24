@@ -19,6 +19,8 @@ object RestUser extends Controller {
 
   def ndocks(memberId: Long) = returnJson(db.NDock.findAllByUserWithName(memberId))
 
+  def ndocksWithDeckId(memberId: Long) = returnJson(db.NDock.findAllByUserWithDeckId(memberId))
+
   def kdocks(memberId: Long) = returnJson(db.KDock.findAllByUserWithName(memberId))
 
   def missions(memberId: Long) = returnJson(db.Mission.findByUserWithFlagship(memberId))

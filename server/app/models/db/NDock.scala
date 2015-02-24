@@ -1,6 +1,6 @@
 package models.db
 
-import models.join.NDockWithName
+import models.join.{NDockWithDeckId, NDockWithName}
 import scalikejdbc._
 import com.ponkotuy.data
 
@@ -19,6 +19,7 @@ object NDock extends SQLSyntaxSupport[NDock] {
   lazy val nd = NDock.syntax("nd")
   lazy val s = Ship.syntax("s")
   lazy val ms = MasterShipBase.syntax("ms")
+  lazy val ds = DeckShip.syntax("ds")
 
   def findAllByUser(memberId: Long)(implicit session: DBSession = NDock.autoSession): List[NDock] = withSQL {
     select.from(NDock as nd)
@@ -41,6 +42,23 @@ object NDock extends SQLSyntaxSupport[NDock] {
         rs.long(nd.created),
         rs.int(ms.id),
         rs.string(ms.name))
+    }.toList().apply()
+
+  def findAllByUserWithDeckId(memberId: Long)(implicit session: DBSession = NDock.autoSession): List[NDockWithDeckId] =
+    withSQL {
+      select(nd.id, nd.memberId, nd.shipId, nd.completeTime, nd.created, ds.deckId).from(NDock as nd)
+        .leftJoin(DeckShip as ds).on(nd.shipId, ds.shipId)
+        .where.eq(nd.memberId, ds.memberId)
+        .orderBy(nd.id)
+    }.map { rs =>
+      NDockWithDeckId(
+        rs.int(nd.id),
+        rs.long(nd.memberId),
+        rs.int(nd.shipId),
+        rs.long(nd.completeTime),
+        rs.long(nd.created),
+        rs.intOpt(ds.deckId)
+      )
     }.toList().apply()
 
   def create(nd: data.NDock, memberId: Long)(implicit session: DBSession = NDock.autoSession): Unit = {
