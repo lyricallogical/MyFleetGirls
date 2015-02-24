@@ -36,7 +36,7 @@
               <tbody>
                 <tr v-repeat="dock: ndocks">
                   <td>{{dock.id}}</td>
-                  <td><a href="@routes.UserView.ship(user.admiral.id)#modal=true&id={{dock.shipId}}">{{dock.name}}</a></td>
+                  <td><a href="@routes.UserView.ship(user.admiral.id)#modal=true&id={{dock.shipId}}">{{dock.name}}</a><small v-if="dock.deckId">{{dock.deckId}}</small></td>
                   <td>{{timeView(dock.completeTime, '修復完了')}}</td>
                 </tr>
               </tbody>

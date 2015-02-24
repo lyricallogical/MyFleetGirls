@@ -50,7 +50,7 @@ $(document).ready ->
 
       checkdata: (that) ->
         () ->
-          $.getJSON "/rest/v1/#{userId}/ndocks", (data) ->
+          $.getJSON "/rest/v2/#{userId}/ndocksWithDeckId", (data) ->
             that.onNdock(data)
           $.getJSON "/rest/v1/#{userId}/kdocks", (data) ->
             that.onKdock(data)
